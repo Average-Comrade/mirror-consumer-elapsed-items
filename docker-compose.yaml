@@ -1,0 +1,36 @@
+
+services:
+  consumer:
+    build:
+      context: .
+      args:
+        - GITHUB_TOKEN=${GITHUB_TOKEN}   # reads from environment or .env file
+  
+  queue:
+    image: redis:latest
+    ports:
+      - "6378:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 50
+      start_period: 30s
+    restart: always
+
+  mirror-db:
+    image: neo4j:latest
+    container_name: neo4j_db
+    ports:
+      - "7480:7474" # HTTP (Neo4j Browser)
+      - "7690:7687" # Bolt (Direct database connection)
+    volumes:
+      - ./neo4j/data:/data
+      - ./neo4j/logs:/logs
+      - ./neo4j/import:/import
+      - ./neo4j/plugins:/plugins
+    environment:
+      # Set your own password here
+      - NEO4J_AUTH=neo4j/password
+    restart: always
+
