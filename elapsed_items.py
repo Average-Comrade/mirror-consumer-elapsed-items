@@ -4,9 +4,9 @@ from neo4j_birtix_db_repo.repos import ElapsedTimeRepository
 from neo4j_birtix_db_repo.models import ElapsedTimePayload
 from neo4j import GraphDatabase
 
-URI = "bolt://localhost:7690"
+URI = "bolt://mirror-db:7687"
 AUTH = ("neo4j", "password")
-redis = Redis('localhost', 6378, decode_responses=True)
+redis = Redis('queue', 6379, decode_responses=True)
 driver = GraphDatabase.driver(URI, auth=AUTH)
 
 
